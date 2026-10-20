@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chúc Mừng 20/10 Đỗ Trang Của Anh 💖</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Pacifico&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pastelPink: '#FFE5EC',
+                        softPink: '#FFC2D1',
+                        vibrantPink: '#FB6F92',
+                        deepPink: '#E63946',
+                        warmCream: '#FFF8F0',
+                        sparkleGold: '#FFD166'
+                    },
+                    fontFamily: {
+                        handwriting: ['Dancing Script', 'cursive'],
+                        title: ['Pacifico', 'cursive'],
+                        sans: ['Quicksand', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-soft': 'bounceSoft 2s infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                        'spin-slow': 'spin 20s linear infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        bounceSoft: {
+                            '0%, 100%': { transform: 'translateY(-5%)' },
+                            '50%': { transform: 'translateY(0)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-12px) rotate(3deg)' },
+                        },
+                        glow: {
+                            'from': { boxShadow: '0 0 15px #FFC2D1, 0 0 25px #FB6F92' },
+                            'to': { boxShadow: '0 0 25px #FB6F92, 0 0 35px #E63946' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #FFF8F0;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .flower-container {
+            position: relative;
+            width: 340px;
+            height: 340px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 640px) {
+            .flower-container {
+                width: 500px;
+                height: 500px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .flower-container {
+                width: 580px;
+                height: 580px;
+            }
+        }
+
+        .flower-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            z-index: 20;
+            box-shadow: 0 0 25px rgba(251, 111, 146, 0.8);
+            transition: all 0.5s ease;
+        }
+
+        @media (min-width: 640px) {
+            .flower-center {
+                width: 150px;
+                height: 150px;
+            }
+        }
+
+        .petal-item {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 75px;
+            height: 110px;
+            margin-left: -37.5px;
+            margin-top: -55px;
+            transform-origin: center center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            z-index: 15;
+        }
+
+        @media (min-width: 640px) {
+            .petal-item {
+                width: 110px;
+                height: 160px;
+                margin-left: -55px;
+                margin-top: -80px;
+            }
+        }
+
+        .petal-content {
+            width: 100%;
+            height: 100%;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            background: linear-gradient(135deg, #FFE5EC 0%, #FFC2D1 50%, #FB6F92 100%);
+            padding: 5px;
+            box-shadow: 0 8px 20px rgba(251, 111, 146, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            border: 2px solid #FFF8F0;
+        }
+
+        .petal-item:hover {
+            z-index: 30;
+        }
+
+        .petal-item:hover .petal-content {
+            border-color: #FFD166;
+            box-shadow: 0 12px 30px rgba(230, 57, 70, 0.5);
+        }
+
+        .petal-caption {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: translateY(10px) scale(0.9);
+        }
+
+        .petal-item:hover .petal-caption {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 194, 209, 0.5);
+        }
+    </style>
+</head>
+<body class="text-gray-800 selection:bg-softPink selection:text-deepPink">
+
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Music Toggle Button -->
+    <div class="fixed top-4 right-4 z-50">
+        <button id="bgm-toggle" onclick="toggleAudio()" class="bg-white/90 hover:bg-white text-vibrantPink p-3 rounded-full shadow-lg border-2 border-softPink transition-all transform hover:scale-110 flex items-center gap-2 group">
+            <i id="bgm-icon" class="fas fa-music text-xl animate-spin-slow"></i>
+            <span id="bgm-text" class="text-xs font-semibold px-1 hidden sm:inline group-hover:inline">Bật Nhạc Lofi 🎵</span>
+        </button>
+    </div>
+
+    <main class="w-full">
+
+        <!-- SLIDE 1: LANDING PAGE -->
+        <section id="slide-1" class="min-h-screen w-full flex flex-col items-center justify-between p-6 relative overflow-hidden bg-gradient-to-b from-pastelPink via-warmCream to-pastelPink">
+            <div class="absolute top-10 left-8 text-3xl sm:text-5xl animate-float opacity-80 select-none">🎈</div>
+            <div class="absolute top-20 right-10 text-3xl sm:text-5xl animate-float opacity-80 select-none" style="animation-delay: 1s;">🧸</div>
+            <div class="absolute bottom-24 left-12 text-3xl sm:text-5xl animate-float opacity-80 select-none" style="animation-delay: 1.5s;">🍓</div>
+            <div class="absolute bottom-32 right-12 text-3xl sm:text-5xl animate-float opacity-80 select-none" style="animation-delay: 0.5s;">🎀</div>
+
+            <div class="pt-8 text-center z-10">
+                <span class="inline-block bg-white/80 text-vibrantPink px-4 py-1.5 rounded-full text-xs sm:text-sm font-bold tracking-wider uppercase border border-softPink shadow-sm mb-3">
+                    ✨ Special Gift for 20/10 ✨
+                </span>
+            </div>
+
+            <div class="text-center my-auto z-10 max-w-3xl px-4">
+                <div class="relative inline-block mb-4">
+                    <h1 class="font-title text-4xl sm:text-6xl md:text-7xl text-vibrantPink drop-shadow-md leading-tight">
+                        CHÚC MỪNG 20/10<br>
+                        <span class="text-deepPink font-handwriting text-5xl sm:text-7xl md:text-8xl">Đỗ Trang Của Anh! 💖</span>
+                    </h1>
+                </div>
+
+                <p class="text-base sm:text-xl text-gray-700 mt-4 font-medium max-w-xl mx-auto leading-relaxed">
+                    Hôm nay là ngày đặc biệt của em bé đáng yêu nhất thế giới! <br class="hidden sm:inline">Anh có một món quà nhỏ xinh lung linh dành riêng cho Trang đâyyy~ 🥰
+                </p>
+
+                <div class="flex justify-center items-center gap-4 mt-6">
+                    <span class="text-2xl sm:text-4xl hover:scale-125 transition-transform cursor-pointer">🌸</span>
+                    <span class="text-2xl sm:text-4xl hover:scale-125 transition-transform cursor-pointer">🐻</span>
+                    <span class="text-2xl sm:text-4xl hover:scale-125 transition-transform cursor-pointer">💖</span>
+                    <span class="text-2xl sm:text-4xl hover:scale-125 transition-transform cursor-pointer">🎀</span>
+                    <span class="text-2xl sm:text-4xl hover:scale-125 transition-transform cursor-pointer">🍰</span>
+                </div>
+            </div>
+
+            <div class="pb-8 z-10 text-center">
+                <button onclick="scrollToSlide('slide-2')" class="group relative inline-flex items-center gap-3 bg-gradient-to-r from-vibrantPink to-deepPink text-white text-lg sm:text-xl font-bold px-8 py-4 rounded-full shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 animate-pulse-slow">
+                    <span>Khám phá điều bất ngờ 💖</span>
+                    <i class="fas fa-chevron-down group-hover:translate-y-1 transition-transform"></i>
+                </button>
+                <p class="text-xs text-gray-500 mt-2 font-medium">Bấm vào đây đi em bé 👋</p>
+            </div>
+        </section>
+
+
+        <!-- SLIDE 2: OUR STORY DIARY -->
+        <section id="slide-2" class="min-h-screen w-full flex flex-col items-center justify-center p-4 sm:p-8 relative bg-gradient-to-b from-pastelPink via-warmCream to-softPink">
+            <div class="max-w-3xl w-full glass-card rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden z-10 my-8">
+                <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-vibrantPink text-white px-6 py-1 rounded-b-xl text-xs sm:text-sm font-bold shadow-md tracking-wider">
+                    📖 OUR LOVE STORY DIARY
+                </div>
+
+                <div class="absolute top-4 right-4 text-3xl opacity-80">💌</div>
+                <div class="absolute bottom-4 left-4 text-3xl opacity-80">🌱</div>
+
+                <div class="text-center mt-4 mb-6">
+                    <h2 class="font-handwriting text-3xl sm:text-5xl text-deepPink font-bold mb-2">
+                        Cảm ơn em bé vì đã luôn bên anh 💕
+                    </h2>
+                    <div class="w-24 h-1 bg-vibrantPink mx-auto rounded-full"></div>
+                </div>
+
+                <div class="space-y-4 text-gray-700 text-sm sm:text-lg leading-relaxed font-medium px-2 sm:px-6 text-justify sm:text-center">
+                    <p class="first-letter:text-4xl first-letter:font-handwriting first-letter:text-vibrantPink first-letter:font-bold">
+                        Gửi Đỗ Trang của anh! Nhân ngày Phụ nữ Việt Nam 20/10, anh muốn nhắn gửi tới em những điều ngọt ngào nhất từ đáy lòng. Cảm ơn em vì đã xuất hiện và trở thành một phần ấm áp, dịu dàng nhất trong cuộc đời anh.
+                    </p>
+                    <p>
+                        Từ những nụ cười hóm hỉnh, những lần dỗi hường cưng nịu, hay cả những khoảnh khắc tụi mình cùng nhau đi ăn, ngủ nướng hay vi vu Hồ Tây... Tất cả đều là những kỷ niệm vô giá mà anh luôn trân trọng từng giây từng phút!
+                    </p>
+                    <p class="text-center font-handwriting text-2xl sm:text-3xl text-vibrantPink pt-2 font-semibold">
+                        "Yêu em bé Đỗ Trang nhiều lắm lắm! ✨❤️"
+                    </p>
+                </div>
+
+                <div class="mt-8 pt-6 border-t border-softPink/50 flex flex-wrap justify-around items-center text-xs sm:text-sm font-semibold text-vibrantPink gap-2">
+                    <span class="bg-pastelPink/80 px-3 py-1 rounded-full">🧸 Ngọt ngào</span>
+                    <span class="bg-pastelPink/80 px-3 py-1 rounded-full">🌸 Rạng rỡ</span>
+                    <span class="bg-pastelPink/80 px-3 py-1 rounded-full">👑 Búp bê của anh</span>
+                </div>
+
+                <div class="mt-8 text-center">
+                    <button onclick="scrollToSlide('slide-3')" class="inline-flex items-center gap-2 bg-white hover:bg-vibrantPink text-vibrantPink hover:text-white border-2 border-vibrantPink font-bold text-base sm:text-lg px-7 py-3 rounded-full transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105">
+                        <span>Đi nhận hoa nè em bé... 👉</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SLIDE 3: THE MEMORY FLOWER -->
+        <section id="slide-3" class="min-h-screen w-full flex flex-col items-center justify-between p-4 sm:p-8 relative bg-gradient-to-b from-softPink via-pastelPink to-warmCream overflow-hidden">
+            <div class="text-center z-10 mt-4">
+                <span class="bg-white/80 text-vibrantPink px-4 py-1 rounded-full text-xs font-bold border border-softPink">
+                    🌹 The Memory Flower
+                </span>
+                <h2 class="font-title text-3xl sm:text-5xl text-deepPink mt-2 drop-shadow-sm">
+                    Bông Hoa Kỷ Niệm 🌸
+                </h2>
+                <p class="text-xs sm:text-sm text-gray-600 mt-1 max-w-md mx-auto">
+                    Chạm hoặc rê chuột vào từng cánh hoa để ngắm lại những khoảnh khắc đáng yêu của tụi mình nhé! 💖
+                </p>
+            </div>
+
+            <!-- FLOWER COMPONENT CONTAINER -->
+            <div class="my-auto py-8 z-10 flex items-center justify-center w-full">
+                <div class="flower-container">
+                    
+                    <!-- Nhụy hoa trung tâm: Anh & Em (1792512879322_1_2.jpg) -->
+                    <div onclick="openModal('1792512879322_1_2.jpg', 'Tụi mình ngọt ngào bên nhau! 👩‍❤️‍👨💖')" class="flower-center overflow-hidden cursor-pointer group border-4 border-white">
+                        <img src="1792512879322_1_2.jpg" alt="Anh & Em" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
+                        <div class="absolute bottom-1 right-1 bg-white/90 text-vibrantPink p-1 rounded-full text-xs shadow">
+                            ❤️
+                        </div>
+                    </div>
+
+                    <!-- 8 Cánh hoa kỷ niệm -->
+                    <!-- Cánh 1: 1792512879371_1_2.jpg -->
+                    <div class="petal-item" style="transform: rotate(0deg) translateY(-110px) rotate(0deg);" onclick="openModal('1792512879371_1_2.jpg', 'Dáng ngồi ngầu chưa kìa 😎')">
+                        <div class="petal-content" style="transform: rotate(0deg);">
+                            <img src="1792512879371_1_2.jpg" alt="Petal 1" class="w-full h-full object-cover rounded-full">
+                        </div>
+                        <div class="petal-caption absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap bg-white/95 text-deepPink font-bold text-xs px-3 py-1.5 rounded-full shadow-lg border border-softPink z-50">
+                            Dáng ngồi ngầu chưa kìa 😎
+                        </div>
+                    </div>
+
+                    <!-- Cánh 2: 1792512879354_1_2.jpeg -->
+                    <div class="petal-item" style="transform: rotate(45deg) translateY(-110px) rotate(-45deg);" onclick="openModal('1792512879354_1_2.jpeg', 'Mặt đắp mặt nạ cực cute 🎭')">
+                        <div class="petal-content" style="transform: rotate(45deg);">
+                            <img src="1792512879354_1_2.jpeg" alt="Petal 2" class="w-full h-full object-cover rounded-full">
+                        </div>
+                        <div class="petal-caption absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap bg-white/95 text-deepPink font-bold text-xs px-3 py-1.5 rounded-full shadow-lg border border-softPink z-50">
+                            Mặt đắp mặt nạ cực cute 🎭
+                        </div>
+                    </div>
+
+                    <!-- Cánh 3: 1792512879338_1_2.jpg -->
+                    <div class="petal-item" style="transform: rotate(90deg) translateY(-110px) rotate(-90deg);" onclick="openModal('1792512879338_1_2.jpg', 'Đắp mặt nạ cùng em bé 💆‍♂️')">
+                        <div class="petal-content" style="transform: rotate(90deg);">
+                            <img src="1792512879338_1_2.jpg" alt="Petal 3" class="w-full h-full object-cover rounded-full">
+                        </div>
+                        <div class="petal-caption absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap bg-white/95 text-deepPink font-bold text-xs px-3 py-1.5 rounded-full shadow-lg border border-softPink z-50">
+                            Đắp mặt nạ cùng em bé 💆‍♂️
+                        </div>
+                    </div>
+
+                    <!-- Cánh 4: 1792512879322_1_2.jpg -->
+                    <div class="petal-item" style="transform: rotate(135deg) translateY(-110px) rotate(-135deg);" onclick="openModal('1792512879322_1_2.jpg', 'Ảnh chụp chung ngọt ngào 💖')">
+                        <div class="petal-content" style="transform: rotate(135deg);">
+                            <img src="1792512879322_1_2.jpg" alt="Petal 4" class="w-full h-full object-cover rounded-full">
+                        </div>
+                        <div class="petal-caption absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap bg-white/95 text-deepPink font-bold text-xs px-3 py-1.5 rounded-full shadow-lg border border-softPink z-50">
+                            Ảnh chụp chung ngọt ngào 💖
+                        </div>
+                    </div>
+
+                    <!-- Cánh 5: 1792512879263_1_2.jpg -->
+                    <div class="petal-item" style="transform: rotate(180deg) translateY(-110px) rotate(-180deg);" onclick="openModal('1792512879263_1_2.jpg', 'Thẹn thùng che mặt 🌸')">
+                        <div class="petal-content" style="transform: rotate(180deg);">
+                            <img src="1792512879263_1_2.jpg" alt="Petal 5" class="w-full h-full object-cover rounded-full">
+                        </div>
+                        <div class="petal-caption absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap bg-white/95 text-deepPink font-bold text-xs px-3 py-1.5 rounded-full shadow-lg border border-softPink z-50">
+                            Thẹn thùng che mặt 🌸
+                        </div>
+                    </div>
+
+                    <!-- Cánh 6: 1792512879231_1_2.jpg -->
+                    <div class="petal-item" style="transform: rotate(225deg) translateY(-110px) rotate(-225deg);" onclick="openModal('1792512879231_1_2.jpg', 'Chuyến đi đạp xe Hồ Tây 🚴‍♀️')">
+                        <div class="petal-content" style="transform: rotate(225deg);">
+                            <img src="1792512879231_1_2.jpg" alt="Petal 6" class="w-full h-full object-cover rounded-full">
+                        </div>
+                        <div class="petal-caption absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap bg-white/95 text-deepPink font-bold text-xs px-3 py-1.5 rounded-full shadow-lg border border-softPink z-50">
+                            Chuyến đi đạp xe Hồ Tây 🚴‍♀️
+                        </div>
+                    </div>
+
+                    <!-- Cánh 7: 1792512879525_1.jpg -->
+                    <div class="petal-item" style="transform: rotate(270deg) translateY(-110px) rotate(-270deg);" onclick="openModal('1792512879525_1.jpg', 'Những khoảnh khắc hài hước 🤪')">
+                        <div class="petal-content" style="transform: rotate(270deg);">
+                            <img src="1792512879525_1.jpg" alt="Petal 7" class="w-full h-full object-cover rounded-full">
+                        </div>
+                        <div class="petal-caption absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap bg-white/95 text-deepPink font-bold text-xs px-3 py-1.5 rounded-full shadow-lg border border-softPink z-50">
+                            Những khoảnh khắc hài hước 🤪
+                        </div>
+                    </div>
+
+                    <!-- Cánh 8: 1792512879561_1_2.jpg -->
+                    <div class="petal-item" style="transform: rotate(315deg) translateY(-110px) rotate(-315deg);" onclick="openModal('1792512879561_1_2.jpg', 'Từng khoảnh khắc đáng yêu 📸')">
+                        <div class="petal-content" style="transform: rotate(315deg);">
+                            <img src="1792512879561_1_2.jpg" alt="Petal 8" class="w-full h-full object-cover rounded-full">
+                        </div>
+                        <div class="petal-caption absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap bg-white/95 text-deepPink font-bold text-xs px-3 py-1.5 rounded-full shadow-lg border border-softPink z-50">
+                            Từng khoảnh khắc đáng yêu 📸
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <script>
+                function adjustPetals() {
+                    const isMobile = window.innerWidth < 640;
+                    const radius = isMobile ? 110 : (window.innerWidth < 1024 ? 170 : 200);
+                    const petals = document.querySelectorAll('.petal-item');
+                    const angles = [0, 45, 90, 135, 180, 225, 270, 315];
+                    
+                    petals.forEach((petal, index) => {
+                        const angle = angles[index];
+                        petal.style.transform = `rotate(${angle}deg) translateY(-${radius}px) rotate(-${angle}deg)`;
+                    });
+                }
+                window.addEventListener('resize', adjustPetals);
+                window.addEventListener('load', adjustPetals);
+            </script>
+
+            <div class="z-10 text-center mb-6">
+                <div class="inline-block bg-white/90 backdrop-blur-md px-8 py-3 rounded-full shadow-lg border-2 border-vibrantPink">
+                    <p class="font-handwriting text-2xl sm:text-3xl text-deepPink font-bold tracking-wide">
+                        Yêu Đỗ Trang của anh nhiều lắm! ✨❤️
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FULL PHOTO MODAL VIEWER -->
+    <div id="image-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="relative bg-white rounded-3xl overflow-hidden max-w-lg w-full p-4 shadow-2xl border-4 border-softPink transform scale-95 transition-transform duration-300" id="modal-box">
+            <button onclick="closeModal()" class="absolute top-3 right-3 bg-vibrantPink text-white rounded-full w-9 h-9 flex items-center justify-center shadow-lg hover:bg-deepPink transition-colors z-20">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+            
+            <div class="rounded-2xl overflow-hidden bg-warmCream">
+                <img id="modal-img" src="" alt="Detail View" class="w-full max-h-[65vh] object-contain mx-auto">
+            </div>
+            
+            <div class="p-4 text-center">
+                <p id="modal-caption" class="font-handwriting text-2xl text-deepPink font-bold">Caption</p>
+                <p class="text-xs text-gray-500 mt-1">20/10 Kỷ niệm đong đầy tình yêu ✨</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT & AUDIO SYSTEM -->
+    <script>
+        function scrollToSlide(slideId) {
+            const element = document.getElementById(slideId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function openModal(imgSrc, caption) {
+            const modal = document.getElementById('image-modal');
+            const modalBox = document.getElementById('modal-box');
+            const modalImg = document.getElementById('modal-img');
+            const modalCaption = document.getElementById('modal-caption');
+
+            modalImg.src = imgSrc;
+            modalCaption.textContent = caption;
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modalBox.classList.remove('scale-95');
+                modalBox.classList.add('scale-100');
+            }, 10);
+
+            createSparkleBurst();
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('image-modal');
+            const modalBox = document.getElementById('modal-box');
+            
+            modalBox.classList.remove('scale-100');
+            modalBox.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
+        }
+
+        document.getElementById('image-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // CANVAS PARTICLES
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const particles = [];
+        const particleTypes = ['🌸', '💖', '✨', '🌹', '💕'];
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = -20;
+                this.size = Math.random() * 16 + 12;
+                this.speedY = Math.random() * 1.5 + 0.8;
+                this.speedX = Math.random() * 1 - 0.5;
+                this.symbol = particleTypes[Math.floor(Math.random() * particleTypes.length)];
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = (Math.random() - 0.5) * 2;
+                this.opacity = Math.random() * 0.7 + 0.3;
+            }
+
+            update() {
+                this.y += this.speedY;
+                this.x += Math.sin(this.y * 0.01) + this.speedX;
+                this.rotation += this.rotationSpeed;
+
+                if (this.y > canvas.height + 20) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate((this.rotation * Math.PI) / 180);
+                ctx.globalAlpha = this.opacity;
+                ctx.font = `${this.size}px serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(this.symbol, 0, 0);
+                ctx.restore();
+            }
+        }
+
+        for (let i = 0; i < 35; i++) {
+            const p = new Particle();
+            p.y = Math.random() * canvas.height;
+            particles.push(p);
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        function createSparkleBurst() {
+            for (let i = 0; i < 15; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.innerHTML = '✨';
+                sparkle.style.position = 'fixed';
+                sparkle.style.left = (window.innerWidth / 2 + (Math.random() - 0.5) * 200) + 'px';
+                sparkle.style.top = (window.innerHeight / 2 + (Math.random() - 0.5) * 200) + 'px';
+                sparkle.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                sparkle.style.pointerEvents = 'none';
+                sparkle.style.zIndex = '100';
+                sparkle.style.transition = 'all 1s ease-out';
+                sparkle.style.opacity = '1';
+
+                document.body.appendChild(sparkle);
+
+                setTimeout(() => {
+                    sparkle.style.transform = `translate(${(Math.random() - 0.5) * 100}px, -100px) scale(0)`;
+                    sparkle.style.opacity = '0';
+                }, 20);
+
+                setTimeout(() => {
+                    sparkle.remove();
+                }, 1000);
+            }
+        }
+
+        // LOFI MUSIC SYNTHESIZER
+        let audioCtx = null;
+        let isPlaying = false;
+        let isMuted = false;
+        let bgmInterval = null;
+
+        const chordProgression = [
+            [261.63, 329.63, 392.00, 493.88], // Cmaj7
+            [220.00, 261.63, 329.63, 392.00], // Am7
+            [174.61, 220.00, 261.63, 329.63], // Fmaj7
+            [196.00, 246.94, 293.66, 349.23]  // G7
+        ];
+
+        let chordIndex = 0;
+
+        function playLofiChord() {
+            if (!audioCtx || isMuted) return;
+
+            const notes = chordProgression[chordIndex];
+            chordIndex = (chordIndex + 1) % chordProgression.length;
+
+            notes.forEach((freq, idx) => {
+                setTimeout(() => {
+                    if (!audioCtx || isMuted) return;
+                    
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+                    gain.gain.setValueAtTime(0, audioCtx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.08, audioCtx.currentTime + 0.2);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 2.5);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 2.6);
+                }, idx * 180);
+            });
+        }
+
+        function toggleAudio() {
+            const icon = document.getElementById('bgm-icon');
+            const text = document.getElementById('bgm-text');
+
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            if (!isPlaying) {
+                isPlaying = true;
+                isMuted = false;
+                playLofiChord();
+                bgmInterval = setInterval(playLofiChord, 3200);
+
+                icon.classList.remove('fa-music');
+                icon.classList.add('fa-volume-high');
+                text.textContent = 'Đang Phát Lofi 🎶';
+            } else {
+                isPlaying = false;
+                isMuted = true;
+                clearInterval(bgmInterval);
+
+                icon.classList.remove('fa-volume-high');
+                icon.classList.add('fa-music');
+                text.textContent = 'Bật Nhạc Lofi 🎵';
+            }
+        }
+    </script>
+</body>
+</html>
